@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import math
 
 def print5(one, two, three, four, five):
     fivestr = "%.10f %.10f %.10f %.10f %.10f" % (one, two, three, four, five)
@@ -38,10 +39,9 @@ class SpectralDensity(object):
         raise NotImplementedError
 
     def set_omegas(self):
-        return [] # override in subclass
+        raise NotImplementedError
 
     def set_cs(self):
-        import math
         vals = []
         if (self.omegas == []):
             self.omegas = self.set_omegas()
@@ -80,7 +80,34 @@ class SpectralDensity(object):
 
 
 class Ohmic(SpectralDensity):
-    pass
+    SDType = "Ohmic"
+    def __init__(self, eta, omega_c, omega_min, omega_max):
+        self.eta = eta
+        self.omega_c = omega_c
+        self.omega_min = omega_min
+        self.omega_max = omega_max
+
+    def J(self, omega):
+        return self.eta * omega * math.exp(-omega / self.omega_c)
+
+    def rho(self, omega):
+        exp_cm = math.exp(-self.omega_max/self.omega_c)
+        prefactor = float(self.N_max) / (self.omega_c / (1.0-exp_cm)
+        return prefactor * math.exp(-omega/omega_c))
+
+    def parser_params(self, parser):
+        super(Ohmic, self).parser_params(parser)
+        parser.add_option("--omega_max", type="float", default=0)
+        parser.add_option("--gamma", type="float", default=1.0)
+        parser.add_option("--omega_c", type="float", default=5.0)
+        return parser
+
+    def apply_options(self, opts):
+        super(Ohmic, self).apply_options(opts)
+        self.omega_max = opts.omega_max
+        self.eta = opts.eta
+        self.omega_c = opts.omega_c
+        return
 
 class Debye(SpectralDensity):
     pass
