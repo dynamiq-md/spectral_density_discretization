@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import math
+import pandas as pd
 
 def print5(one, two, three, four, five):
     fivestr = "%.10f %.10f %.10f %.10f %.10f" % (one, two, three, four, five)
@@ -57,6 +58,11 @@ class SpectralDensity(object):
 
         self.cs = vals
         return vals
+
+    def pandas(self):
+        omegas = pd.Series(self.omegas)
+        cs = pd.Series(self.cs)
+        return pd.DataFrame({'omega' : omegas, 'c_j' : cs})
 
     def parser_params(self, parser):
         parser.add_option("-N", "--N_max", type="int")
