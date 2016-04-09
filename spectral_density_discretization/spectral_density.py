@@ -98,8 +98,8 @@ class Ohmic(SpectralDensity):
 
     def rho(self, omega):
         exp_cm = math.exp(-self.omega_max/self.omega_c)
-        prefactor = float(self.N_max) / (self.omega_c / (1.0-exp_cm)
-        return prefactor * math.exp(-omega/omega_c))
+        prefactor = float(self.N_max) / self.omega_c / (1.0-exp_cm)
+        return prefactor * math.exp(-omega/omega_c)
 
     def parser_params(self, parser):
         super(Ohmic, self).parser_params(parser)
