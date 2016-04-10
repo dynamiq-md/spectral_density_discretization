@@ -28,7 +28,7 @@ class SpectralDensity(object):
     def __init__(self, N_max, eta):
         self.N_max = 0
         self.eta = 0.0
-        self.omegas = [] # omegas are the frequencies selected
+        self._omegas = [] # omegas are the frequencies selected
         self.cs = []     # cs are the coupling constants (1 for ea. omega)
 
     def J(self, omega):
@@ -38,6 +38,15 @@ class SpectralDensity(object):
         # density: override in subclass, but not necessary if set_cs is
         # overridden
         raise NotImplementedError
+
+    @property
+    def omega(self):
+        return self._omegas
+
+    @property
+    def omega(self, val):
+        self._omegas = val
+        self.set_cs()
 
     def set_omegas(self):
         raise NotImplementedError
